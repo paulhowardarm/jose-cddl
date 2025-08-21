@@ -1,0 +1,46 @@
+JWK = {
+  "kty" => tstr,             ; Key Type (e.g., "RSA", "EC", "oct")
+  ? "use" => tstr,           ; Public Key Use (e.g., "sig", "enc")
+  ? "key_ops" => [* tstr],   ; Key Operations
+  ? "alg" => tstr,           ; Algorithm (e.g., "RS256", "ES256")
+  ? "kid" => tstr,           ; Key ID
+  ? "x5u" => tstr,           ; X.509 URL
+  ? "x5c" => [* bytes-b64u],       ; X.509 Certificate Chain
+  ? "x5t" => bytes-b64u,           ; X.509 SHA-1 Thumbprint
+  ? "x5t#S256" => bytes-b64u,      ; X.509 SHA-256 Thumbprint
+
+  ; Type-specific parameters
+  ? RSA-Key-Fields,
+  ? EC-Key-Fields,
+  ? Symmetric-Key-Fields
+}
+
+JWK_Set = [ + JWK ]
+
+; RSA
+RSA-Key-Fields = (
+  "n" => bytes-b64u,   ; modulus
+  "e" => bytes-b64u,   ; public exponent
+  ? "d" => bytes-b64u, ; private exponent
+  ? "p" => bytes-b64u,
+  ? "q" => bytes-b64u,
+  ? "dp" => bytes-b64u,
+  ? "dq" => bytes-b64u,
+  ? "qi" => bytes-b64u
+)
+
+; EC
+EC-Key-Fields = (
+  "crv" => tstr, ; curve name (e.g., "P-256")
+  "x" => bytes-b64u,
+  "y" => bytes-b64u,
+  ? "d" => bytes-b64u
+)
+
+; Symmetric (octet sequence)
+Symmetric-Key-Fields = (
+  "k" => bytes-b64u  ; key value
+)
+
+; Util type for a base64 byte array in JSON
+bytes-b64u = tstr .b64u bytes
